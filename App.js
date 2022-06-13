@@ -1,20 +1,22 @@
 import { StatusBar } from 'expo-status-bar';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import Intro from './app/screens/intro';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import CarScreen from './app/screens/CarScreen';
 
 export default function App() {
+  const [user, setUser] = useState({})
+
   const findUser = async () => {
     const result = await AsyncStorage.getItem('user')
-    console.log(result)
+    setUser(JSON.parse(result))
   }
 
   useEffect(() => {
     findUser()
   }, [])
 
-  return <Intro />;
+  return <CarScreen user={user} />;
 }
 
 const styles = StyleSheet.create({
