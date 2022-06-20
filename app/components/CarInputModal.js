@@ -25,8 +25,13 @@ const CarInputModal = ({visible, onClose, onSubmit}) => {
     setMarca('')
     setModelo('')
     setAno('')
+    onClose()
+  }
 
-    onClose
+  const closeModal = () => {
+    setMarca('')
+    setModelo('')
+    setAno('')
   }
 
   return <Modal visible={visible} animationType='fade' >
@@ -36,7 +41,7 @@ const CarInputModal = ({visible, onClose, onSubmit}) => {
       <TextInput value={ano} placeholder='Ano' style={[styles.input, styles.ano]} onChangeText={(text) => handleOnChangeText(text, 'ano')} />
       <View style={styles.btnContainer}>
         <RoundIconBtn size={15} antIconName='check' onPress={handleSubmit} />
-        <RoundIconBtn size={15} antIconName='close' style={{marginLeft: 15}} onPress={onClose} />
+        <RoundIconBtn size={15} antIconName='close' style={{marginLeft: 15}} onPress={closeModal} />
       </View>
      
     </View>
