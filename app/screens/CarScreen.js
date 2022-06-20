@@ -2,9 +2,11 @@ import { StyleSheet, View, Text } from 'react-native'
 import React, {useEffect, useState} from 'react'
 import SearchBar from '../components/SearchBar';
 import RoundIconBtn from '../components/RoundIconBtn';
+import CarInputModal from '../components/CarInputModal';
 
 const CarScreen = ({user}) => {
   const [greet, setGreet] = useState('bom dia');
+  const [modalVisible, setModalVisible] = useState(false)
 
   const findGreet = () => {
     const hrs = new Date().getHours()
@@ -18,8 +20,12 @@ const CarScreen = ({user}) => {
     findGreet()
   }, [])
 
+  const handleOnSubmit = (marca, modelo, ano) => {
+    console.log(marca, modelo, ano)
+  }
 
   return (
+    <>
     <View style={styles.container}>
       <Text style={styles.header}>{`${greet} ${user.name}`}</Text>
       <SearchBar containerStyle={{marginVertical: 15}}/>
@@ -29,12 +35,18 @@ const CarScreen = ({user}) => {
           Adicionar Carro
         </Text>
         <RoundIconBtn 
-          onPress={() => console.log('abrindo modal')} 
+          onPress={() => setModalVisible(true)} 
           antIconName='plus' 
           style={styles.addBtn} 
         />
       </View>
     </View>
+    <CarInputModal 
+      visible={modalVisible} 
+      onClose={() => setModalVisible(false)}
+      onSubmit={handleOnSubmit}
+     />
+    </>
   )
 }
 

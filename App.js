@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import CarScreen from './app/screens/CarScreen';
-import Intro from './app/screens/intro';
+import Intro from './app/screens/Intro';
 
 
 export default function App() {
@@ -19,8 +19,8 @@ export default function App() {
   useEffect(() => {
     findUser()
   }, [])
-
-  if (!user.nome) return <Intro />
+  
+  if (!user.name) return <Intro onFinish={findUser} />
   return <CarScreen user={user} />;
 }
 
