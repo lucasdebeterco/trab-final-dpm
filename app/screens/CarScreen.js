@@ -30,7 +30,6 @@ const CarScreen = ({user}) => {
     findGreet()
   }, [])
 
-
   const handleOnSubmit = async (marca, modelo, ano) => {
     const car = {id: Date.now(), marca, modelo, ano, time: Date.now()}
     const updatedCars = [...cars, car]
@@ -66,6 +65,8 @@ const CarScreen = ({user}) => {
     <RoundIconBtn 
       onPress={() => setModalVisible(true)} 
       antIconName='plus' 
+      alignItems='center'
+      justifyContent='center'
       style={styles.addBtn} 
     />
 
@@ -101,7 +102,10 @@ const styles = StyleSheet.create({
     zIndex: -1
   },
   addBtn: {
-    position: 'absolute'
+    position: 'absolute',
+    justifyContent: 'center',
+    alignItems: 'center',
+    textAlign: 'center'
   }
 })
 
