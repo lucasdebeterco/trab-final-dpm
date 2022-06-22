@@ -1,12 +1,16 @@
-import { StyleSheet, View, Text } from 'react-native'
+import { StyleSheet, View, Text} from 'react-native'
 import React, {useEffect, useState} from 'react'
 import SearchBar from '../components/SearchBar';
+import Car from '../components/Car';
 import RoundIconBtn from '../components/RoundIconBtn';
 import CarInputModal from '../components/CarInputModal';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { FlatList } from 'react-native-web';
 
 const CarScreen = ({user}) => {
   const [greet, setGreet] = useState('bom dia');
   const [modalVisible, setModalVisible] = useState(false)
+  const [cars, setCars] = useState([])
 
   const findGreet = () => {
     const hrs = new Date().getHours()
@@ -16,12 +20,23 @@ const CarScreen = ({user}) => {
     return setGreet('Boa noite')
   }
 
+  const findCars = async () => {
+    const result = await AsyncStorage.getItem('cars')
+    if (result !== null) setCars(JSON.parse(result))
+  }
+
   useEffect(() => {
+    findCars()
     findGreet()
   }, [])
 
-  const handleOnSubmit = (marca, modelo, ano) => {
-    console.log(marca, modelo, ano)
+
+  const handleOnSubmit = async (marca, modelo, ano) => {
+    const car = {id: Date.now(), marca, modelo, ano, time: Date.now()}
+    const updatedCars = [...cars, car]
+    
+    setCars(updatedCars)
+    AsyncStorage.setItem('cars', JSON.stringify(updatedCars))
   }
 
   return (
@@ -30,17 +45,30 @@ const CarScreen = ({user}) => {
       <Text style={styles.header}>{`${greet} ${user.name}`}</Text>
       <SearchBar containerStyle={{marginVertical: 15}}/>
 
-      <View style={[ StyleSheet.absoluteFillObject, styles.emptyHeaderContainer]}>
-        <Text style={styles.emptyHeader}>
-          Adicionar Carro
-        </Text>
-        <RoundIconBtn 
-          onPress={() => setModalVisible(true)} 
-          antIconName='plus' 
-          style={styles.addBtn} 
-        />
-      </View>
+      <FlatList 
+        data={cars}
+        numColumns={2}
+        columnWrapperStyle={{justifyContent: "space-between", marginBottom: 15}}
+        keyExtractor={item => item.id.toString()}
+        renderItem={({ item }) => <Car item={item} />} 
+      />
+
+      {!cars.length ?       
+        <View style={[ StyleSheet.absoluteFillObject, styles.emptyHeaderContainer]}>
+          <Text style={styles.emptyHeader}>
+            Adicionar Carro
+          </Text>
+        </View> : null
+      }
+
     </View>
+    
+    <RoundIconBtn 
+      onPress={() => setModalVisible(true)} 
+      antIconName='plus' 
+      style={styles.addBtn} 
+    />
+
     <CarInputModal 
       visible={modalVisible} 
       onClose={() => setModalVisible(false)}
@@ -57,7 +85,8 @@ const styles = StyleSheet.create({
   },
   container: {
     paddingHorizontal: 20,
-    flex: 1
+    flex: 1,
+    zIndex: 1
   },
   emptyHeader: {
     fontSize: 30,
